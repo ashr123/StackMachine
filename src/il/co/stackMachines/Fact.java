@@ -40,16 +40,18 @@ public class Fact
 
 	protected Object applyKSM()
 	{
-		if (k.equals(Labels.kInit))
-			return x;
-		else if (k.equals(Labels.kFact))
+		switch ((Labels) k)
 		{
-			n = pop();
-			x = (Long) x * (Long) n;
-			k = pop();
-			return applyKSM();
-		} else
-			throw new IllegalStateException("Not a legal label: " + k);
+			case kInit:
+				return x;
+			case kFact:
+				n = pop();
+				x = (Long) x * (Long) n;
+				k = pop();
+				return applyKSM();
+			default:
+				throw new IllegalStateException("Not a legal label: " + k);
+		}
 	}
 
 	private Object factSM()
