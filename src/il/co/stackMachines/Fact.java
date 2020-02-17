@@ -38,35 +38,36 @@ public class Fact
 		stack.clear();
 	}
 
-	protected Object applyKSM()
+	protected void applyKSM()
 	{
 		switch ((Labels) k)
 		{
 			case kInit:
-				return x;
+				return;
 			case kFact:
 				n = pop();
 				x = (Long) x * (Long) n;
 				k = pop();
-				return applyKSM();
+				applyKSM();
+				return;
 			default:
 				throw new IllegalStateException("Not a legal label: " + k);
 		}
 	}
 
-	private Object factSM()
+	private void factSM()
 	{
 		if ((Long) n == 0)
 		{
 			x = 1L;
 			k = pop();
-			return applyKSM();
+			applyKSM();
 		} else
 		{
 			push(n);
 			n = (Long) n - 1;
 			push(Labels.kFact);
-			return factSM();
+			factSM();
 		}
 	}
 
@@ -75,6 +76,7 @@ public class Fact
 		stackReset();
 		n = ((Number) a).longValue();
 		push(Labels.kInit);
-		return factSM();
+		factSM();
+		return x;
 	}
 }
