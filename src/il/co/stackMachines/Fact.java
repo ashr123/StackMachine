@@ -43,6 +43,8 @@ public class Fact
 		switch ((Labels) k)
 		{
 			case kInit:
+				n = pop();
+				x = "((fact " + n + ") ==> " + x + ')';
 				return;
 			case kFact:
 				n = pop();
@@ -75,6 +77,7 @@ public class Fact
 	{
 		stackReset();
 		n = ((Number) a).longValue();
+		push(n);
 		push(Labels.kInit);
 		factSM();
 		return x;
