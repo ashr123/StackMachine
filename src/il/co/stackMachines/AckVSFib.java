@@ -24,7 +24,6 @@ public class AckVSFib
 			a = null,
 			b = null,
 			x = null,
-			n = null,
 			k = null,
 			t = null;
 
@@ -60,15 +59,15 @@ public class AckVSFib
 
 	private void fib()
 	{
-		if ((Long) n < 2)
+		if ((Long) a < 2)
 		{
-			pushT2(n);
+			pushT2(a);
 			pushT2(Labels.T_1);
 			t = popT1();
 			applyT();
 		} else
 		{
-			pushT2(n);
+			pushT2(a);
 			pushT2(Labels.T_2);
 			t = popT1();
 			applyT();
@@ -107,9 +106,9 @@ public class AckVSFib
 				a = "((fib " + a + ") ==> " + x + ')';
 				return;
 			case K_FIB_1:
-				n = popT2();
+				a = popT2();
 				pushT2(x);
-				pushT2(n);
+				pushT2(a);
 				pushT2(Labels.T_5);
 				t = popT1();
 				applyT();
@@ -145,10 +144,10 @@ public class AckVSFib
 				applyK();
 				return;
 			case T_2:
-				n = popT2();
-				pushT2(n);
+					a = popT2();
+				pushT2(a);
 				pushT2(Labels.K_FIB_1);
-				n = (Long) n - 1;
+				a = (Long) a - 1;
 				fib();
 				return;
 			case T_3:
@@ -177,8 +176,8 @@ public class AckVSFib
 					return;
 				}
 			case T_5:
-				n = popT2();
-				n = (Long) n - 2;
+				a = popT2();
+				a = (Long) a - 2;
 				pushT2(Labels.K_FIB_2);
 				fib();
 				return;
@@ -218,8 +217,8 @@ public class AckVSFib
 				ack();
 				return;
 			case T_FIB_INIT:
-				n = popT2();
-				pushT2(n);
+				a = popT2();
+				pushT2(a);
 				pushT2(Labels.K_INIT_FIB);
 				fib();
 				return;
