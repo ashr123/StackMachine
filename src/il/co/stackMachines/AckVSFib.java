@@ -99,11 +99,11 @@ public class AckVSFib
 			case K_INIT_ACK:
 				a = popT1();
 				b = popT1();
-				a = "((ack " + a + ' ' + b + ") ==> " + x + ')';
+				x = "((ack " + a + ' ' + b + ") ==> " + x + ')';
 				return;
 			case K_INIT_FIB:
 				a = popT2();
-				a = "((fib " + a + ") ==> " + x + ')';
+				x = "((fib " + a + ") ==> " + x + ')';
 				return;
 			case K_FIB_1:
 				a = popT2();
@@ -240,6 +240,6 @@ public class AckVSFib
 
 		t = popT1();
 		applyT();
-		return this.a;
+		return x;
 	}
 }
