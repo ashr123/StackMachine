@@ -144,7 +144,7 @@ public class AckVSFib
 				applyK();
 				return;
 			case T_2:
-					a = popT2();
+				a = popT2();
 				pushT2(a);
 				pushT2(Labels.K_FIB_1);
 				a = (Long) a - 1;
