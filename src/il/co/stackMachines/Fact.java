@@ -19,9 +19,9 @@ public class Fact
 	 * A register
 	 */
 	private Object
-			n = null,
-			k = null,
-			x = null;
+			rdi, // n
+			k,
+			rax;
 
 	private void push(Object o)
 	{
@@ -43,12 +43,12 @@ public class Fact
 		switch ((Labels) k)
 		{
 			case kInit:
-				n = pop();
-				x = "((fact " + n + ") ==> " + x + ')';
+				rdi = pop();
+				rax = "((fact " + rdi + ") ==> " + rax + ')';
 				return;
 			case kFact:
-				n = pop();
-				x = (Long) x * (Long) n;
+				rdi = pop();
+				rax = (Long) rax * (Long) rdi;
 				k = pop();
 				applyKSM();
 				return;
@@ -59,15 +59,15 @@ public class Fact
 
 	private void factSM()
 	{
-		if ((Long) n == 0)
+		if ((Long) rdi == 0)
 		{
-			x = 1L;
+			rax = 1L;
 			k = pop();
 			applyKSM();
 		} else
 		{
-			push(n);
-			n = (Long) n - 1;
+			push(rdi);
+			rdi = (Long) rdi - 1;
 			push(Labels.kFact);
 			factSM();
 		}
@@ -76,10 +76,10 @@ public class Fact
 	public Object fact(Object a)
 	{
 		stackReset();
-		n = ((Number) a).longValue();
-		push(n);
+		rdi = ((Number) a).longValue();
+		push(rdi);
 		push(Labels.kInit);
 		factSM();
-		return x;
+		return rax;
 	}
 }
