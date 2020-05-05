@@ -42,18 +42,17 @@ public class Fact
 	{
 		switch ((Labels) k)
 		{
-			case kInit:
+			case kInit -> {
 				rdi = pop();
 				rax = "((fact " + rdi + ") ==> " + rax + ')';
-				return;
-			case kFact:
+			}
+			case kFact -> {
 				rdi = pop();
 				rax = (Long) rax * (Long) rdi;
 				k = pop();
 				applyKSM();
-				return;
-			default:
-				throw new IllegalStateException("Not a legal label: " + k);
+			}
+			default -> throw new IllegalStateException("Not a legal label: " + k);
 		}
 	}
 

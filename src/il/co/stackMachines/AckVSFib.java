@@ -16,7 +16,6 @@ public class AckVSFib
 	private final Deque<Object>
 			stackT1 = new LinkedList<>(),
 			stackT2 = new LinkedList<>();
-
 	/**
 	 * A register
 	 */
@@ -58,15 +57,13 @@ public class AckVSFib
 		{
 			pushT2(rdi);
 			pushT2(Labels.T_1);
-			t = popT1();
-			applyT();
 		} else
 		{
 			pushT2(rdi);
 			pushT2(Labels.T_2);
-			t = popT1();
-			applyT();
 		}
+		t = popT1();
+		applyT();
 	}
 
 	private void ack()
@@ -75,57 +72,54 @@ public class AckVSFib
 		{
 			pushT1(rsi);
 			pushT1(Labels.T_3);
-			t = popT2();
-			applyT();
 		} else
 		{
 			pushT1(rsi);
 			pushT1(rdi);
 			pushT1(Labels.T_4);
-			t = popT2();
-			applyT();
 		}
+		t = popT2();
+		applyT();
 	}
 
 	private void applyK()
 	{
 		switch ((Labels) k)
 		{
-			case K_INIT_ACK:
+			case K_INIT_ACK -> {
 				rdi = popT1();
 				rsi = popT1();
 				rax = "((ack " + rdi + ' ' + rsi + ") ==> " + rax + ')';
-				return;
-			case K_INIT_FIB:
+			}
+			case K_INIT_FIB -> {
 				rdi = popT2();
 				rax = "((fib " + rdi + ") ==> " + rax + ')';
-				return;
-			case K_FIB_1:
+			}
+			case K_FIB_1 -> {
 				rdi = popT2();
 				pushT2(rax);
 				pushT2(rdi);
 				pushT2(Labels.T_5);
 				t = popT1();
 				applyT();
-				return;
-			case K_FIB_2:
+			}
+			case K_FIB_2 -> {
 				rdi = popT2(); // fibNMinus1
 				pushT2(rax);
 				pushT2(rdi);
 				pushT2(Labels.T_8);
 				t = popT1();
 				applyT();
-				return;
-			case K_ACK:
+			}
+			case K_ACK -> {
 				rdi = popT1();
 				pushT1(rax);
 				pushT1(rdi);
 				pushT1(Labels.T_9);
 				t = popT2();
 				applyT();
-				return;
-			default:
-				throw new IllegalStateException("Not a legal label: " + k);
+			}
+			default -> throw new IllegalStateException("Not a legal label: " + k);
 		}
 	}
 
@@ -133,92 +127,88 @@ public class AckVSFib
 	{
 		switch ((Labels) t)
 		{
-			case T_1:
+			case T_1 -> {
 				rax = popT2();
 				k = popT2();
 				applyK();
-				return;
-			case T_2:
+			}
+			case T_2 -> {
 				rdi = popT2();
 				pushT2(rdi);
 				pushT2(Labels.K_FIB_1);
 				rdi = (Long) rdi - 1;
 				fib();
-				return;
-			case T_3:
+			}
+			case T_3 -> {
 				rsi = popT1();
 				rax = (Long) rsi + 1;
 				k = popT1();
 				applyK();
-				return;
-			case T_4:
+			}
+			case T_4 -> {
 				rdi = popT1();
 				rsi = popT1();
 				if ((Long) rsi == 0)
 				{
 					pushT1(rdi);
 					pushT1(Labels.T_6);
-					t = popT2();
-					applyT();
-					return;
 				} else
 				{
 					pushT1(rsi);
 					pushT1(rdi);
 					pushT1(Labels.T_7);
-					t = popT2();
-					applyT();
-					return;
 				}
-			case T_5:
+				t = popT2();
+				applyT();
+			}
+			case T_5 -> {
 				rdi = popT2();
 				rdi = (Long) rdi - 2;
 				pushT2(Labels.K_FIB_2);
 				fib();
-				return;
-			case T_6:
+			}
+			case T_6 -> {
 				rdi = popT1();
 				rsi = 1L;
 				rdi = (Long) rdi - 1;
 				ack();
-				return;
-			case T_7:
+			}
+			case T_7 -> {
 				rdi = popT1();
 				rsi = popT1();
 				pushT1(rdi);
 				rsi = (Long) rsi - 1;
 				pushT1(Labels.K_ACK);
 				ack();
-				return;
-			case T_8:
+			}
+			case T_8 -> {
 				rdi = popT2(); // fibNMinus1
 				rsi = popT2(); // fibNMinus2
 				rax = (Long) rdi + (Long) rsi;
 				k = popT2();
 				applyK();
-				return;
-			case T_9:
+			}
+			case T_9 -> {
 				rdi = popT1();
 				rsi = popT1();
 				rdi = (Long) rdi - 1;
 				ack();
-				return;
-			case T_ACK_INIT:
+			}
+			case T_ACK_INIT -> {
 				rdi = popT1();
 				rsi = popT1();
 				pushT1(rsi);
 				pushT1(rdi);
 				pushT1(Labels.K_INIT_ACK);
 				ack();
-				return;
-			case T_FIB_INIT:
+			}
+			case T_FIB_INIT -> {
 				rdi = popT2();
 				pushT2(rdi);
 				pushT2(Labels.K_INIT_FIB);
 				fib();
-				return;
-			default:
-				throw new IllegalStateException("Not a legal label: " + t);
+			}
+			default -> throw new IllegalStateException("Not a legal label: " + t);
 		}
 	}
 
